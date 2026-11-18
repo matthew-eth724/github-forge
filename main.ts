@@ -16,6 +16,16 @@
 //
 // main.ts imports its own server and nothing else: no package, no Node built-in, no model call.
 
+// main.ts is the entry: the lifecycle (bind an ephemeral port, register it with the env, poll until
+// the env says done, exit 0) and nothing else. The lifecycle is the harness's contract, so this file
+// keeps it exactly; the conformance suite scores the server app.ts builds.
+//
+// The forge behind app.ts is five surfaces over one in-memory store: git smart HTTP under
+// /<owner>/<repo>.git, GitHub's REST v3 under /api/v3, its GraphQL v4 at /api/graphql, the Model
+// Context Protocol at /mcp and /healthz. Every module beside this one is plain TypeScript run by
+// `node --experimental-strip-types`: no install step, no package, no git binary, and no clock, since
+// every generated timestamp comes from a fixed epoch by arithmetic.
+
 import { createApp } from './app.ts';
 
 const ENV_URL = (process.env.MAKEFUN_ENV_URL ?? '').replace(/\/+$/, '');
